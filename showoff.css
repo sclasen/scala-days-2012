@@ -32,6 +32,9 @@ body {
   color: black;
 } 
 
+pre {
+  line-height: 1.5em;
+}
 pre, code {
   background-color: white;
   color: black;

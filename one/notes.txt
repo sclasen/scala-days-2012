@@ -1,0 +1,115 @@
+1) Codebase
+  - version control (we heart git)
+  - some people DO edit live files on the server...
+  - isolation
+
+2) Dependencies
+  - bundler
+  - isolation
+  - vendoring wkhtmltopdf for pdfkit
+
+isolation 
+  - good for new devs
+
+3) Config
+  - we're still bad at this (Rails)
+  - config/database.yml
+  - app/environments/XXX
+     - MyModule.configure 
+  - gettting better -> ENV is a hash
+  - URLs are the way
+    - get everything in there
+  - URL::Parse is your friend
+    - smart_env
+
+4) Backing Services
+  - related to (3)
+  - most libs not read from ENV
+    - (you're welcome)
+
+5) Build, release, run
+  - build -> test
+  - write/run em?
+  - poll
+  - cap deploy
+  - git push heroku
+  - buildpacks
+  - that which is running cannot be changed
+
+6) Processes
+  - UNIX ftw
+  - share-nothing 
+    - everything in the DB
+  - store sessions in memcache, redis, or db
+  - that which is alive will die
+
+7) Port binding
+  - abstract to os, not app container
+  - os already has abstraction, stable, x-platform
+  - rails server, thin, rackup, etc
+  - rack allows you to swap ruby servers
+  - sinatra -> boots itself onto a port as well
+  - rails 3000
+  - sinatra 4567
+  - rack 9292
+  - foreman 5000
+  - that which does not listen cannot respond
+
+8) Concurrency
+  - rails was slow, so we fixed this first 
+  - workers - DJ, Resque, QueueClassic
+  - advanced 
+    - clock 
+    - resque-scheduler
+    - heroku scheduler
+  - eventually you will max out a process
+  - process manager
+  - that which does not scale cannot grow
+
+9) Disposability  
+  - graceful shutdown on SIGTERM
+  - robust against SIGKILL
+  - quick startup
+    - OK
+  - against some old-school techniques
+    - expensive startup
+    - forking to share memory
+    - jvm
+
+10) Dev/prod parity
+  - the FAILS
+  - sqlite / postgres
+  - DATABASE_URL helps a lot
+  - i cheat here too - habits are hard to break
+  - still need adapters - same in both envs
+    - wouldn't use AR in dev and Sequel in prod?
+  - easier to run backing services
+  - vagrant
+  - that which is different breaks
+
+11) Logs
+  - STDOUT
+  - uses tools built for log aggregation to do log aggregation
+  - Rails logs are an anti-pattern
+  - levels? wut?
+  - strip/encrypt passwords
+  - keep it verbose
+  - that which is not logged disappears
+  - Buffered I/O and STDOUT.sync = true
+
+12) Admin Processes
+  - one-off processes
+  - rake tasks
+  - run in identical process to app
+  - script/
+  - console
+
+Open/Closed Principle
+
+Open for Extension
+Closed for Modification
+
+
+Rails Fails: 3 and 11
+Easily Overcome
+Ruby Frameworks are The Win!
