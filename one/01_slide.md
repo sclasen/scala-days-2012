@@ -1,15 +1,33 @@
 !SLIDE center
 # Twelve Factor Ruby
 <img src="ruby_logo.gif" style="background: white"/>
+<br/>
+![Heroku](logo.png)
 
 !SLIDE center
 <img src="12factor.png" style="background: white"/>
 ## www.12factor.net
 ## Adam Wiggins
 
+!SLIDE 
+# Me
+
+* Chris Continanza
+* Rails 1, 2, 3, Sinatra, CGI.out
+* adapters, workers, tests - oh my!
+* github.com/csquared
+* @em_csquared 
+
+
+!SLIDE center 
+# This is not a talk
+
+<img src="Magritte-pipe.jpg" />
+
 !SLIDE center
 # I. Codebase
-## One codebase tracked in revision control, many deploys
+### One codebase tracked in revision control, 
+### many deploys
 
 <img src="codebase-deploys.png" style="background: white"/>
 
@@ -18,6 +36,7 @@
 ## Explicitly declare and isolate dependencies
 
     $ bundle install
+
     $ bundle exec
 
 !SLIDE
@@ -36,7 +55,8 @@
 # IV. Backing Services
 ## Treat backing services as attached resources
 
-<img src="attached-resources.png" style="background:white"/>
+### 'URLs are the Uniform Way to Locate Resources' - Adam Wiggins
+<img src="attached-resources.png" style="background:white" width="600px"/>
 
 !SLIDE center
 # V. Build, release, run
@@ -66,16 +86,23 @@
 
 !SLIDE
 # IX. Disposability  
+## Maximize robustness with fast startup and graceful shutdown
 
     @@@ Ruby
     trap('SIGTERM') do
       gracefully_shutdown
     end
 
-!SLIDE center
+!SLIDE 
 # X. Dev/prod parity
+## Keep development, staging, and production as similar as possible
 
-<img src="dev_prod.png" style="background: white"/>
+    $ heroku addons:add \
+        heroku-postgresql:crane \ 
+        --fork postgres://A42...
+
+    $ heroku db:pull
+
 
 
 !SLIDE
@@ -85,6 +112,13 @@
     @@@ Ruby
     config.logger = Logger.new(STDOUT)
   
+!SLIDE
+# Logging Add-ons
+
+  - New relic
+  - Hoptoad/Airbrake
+  - Papertrail
+  - More...
 
 !SLIDE
 # XII. Admin Processes
@@ -104,17 +138,41 @@
 !SLIDE
 # III. Config
   
-    - conforms with (I)
     - config/database.yml
     - config/environments
 
 !SLIDE commandline
 # XI. Logs
 
+    $ tail -f log/production.log
+    
     $ tail -f log/development.log
 
 !SLIDE
 # Both Fails are EASILY overcome
 
+    @@@ Ruby
+    config.logger = Logger.new(STDOUT)
+
+    ActiveRecord.establish_connection(
+                        ENV['DATABASE_URL'])
+
+!SLIDE bullets
+# Gains
+
+- maximum portability / new devs
+- deploy on cloud platforms
+- continuous deployment  staging
+- effortless scale
+
 !SLIDE
-# Ruby Frameworks are For The Win!
+# Ruby Frameworks are 
+# For The Win!
+
+!SLIDE
+# Thank You !
+
+## csquared@heroku.com
+## @em_csquared
+## github.com/csquared
+![Heroku](logo.png)
