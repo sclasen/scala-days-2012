@@ -1,1 +1,1 @@
-{ "name": "Heroku through the lens of Scala", "sections": [ {"section":"one"} ]}
+{ "name": "Heroku through the lens of Scala", "sections": [ {"section":"general"},{"section":"scala"} ]}

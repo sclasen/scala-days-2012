@@ -1,4 +1,4 @@
-!SLIDE center transition=toss
+!SLIDE center 
 # An Inside look at Heroku through the lens of Scala
 <br/>
 ![Heroku](logo.png)
@@ -6,7 +6,7 @@
 Follow along at 
 http://scala-days-2012.herokuapp.com
 
-!SLIDE transition=toss
+!SLIDE 
 # Me
 
 * Scott Clasen
@@ -14,7 +14,7 @@ http://scala-days-2012.herokuapp.com
 * github.com/ticktock | github.com/sclasen
 * @scottclasen
 
-!SLIDE bullets incremental transition=toss
+!SLIDE bullets incremental 
 * What is Heroku? 
 * How do I deploy to Heroku?
 * What's a Procfile?
@@ -24,9 +24,9 @@ http://scala-days-2012.herokuapp.com
 * Whats's an Addon?
 !SLIDE center 
 # What is Heroku? 
-!SLIDE center
+!SLIDE 
 ## Heroku is a polyglot cloud application platform with first class support for Scala, Clojure, Java, Ruby, Python and Node.js
-!SLIDE center
+!SLIDE 
 ## We strive to remove all the operational friction from the development process. 
 
 ## We let you just concentrate on coding your app. 
@@ -35,7 +35,7 @@ http://scala-days-2012.herokuapp.com
 
 ## We manage load balancing, process monitoring, log aggregation and more.
 
-!SLIDE center transition=toss
+!SLIDE center 
 # How do I deploy to Heroku?
 !SLIDE commandline incremental transition=toss
 ## Deployment to Heroku is done with git.
@@ -59,10 +59,10 @@ http://scala-days-2012.herokuapp.com
 ##How does Heroku know what to run?
 
 
-!SLIDE center transition=toss
+!SLIDE center 
 # What's a Procfile?
-!SLIDE center transition=toss
-# A Procfile is a text file that lets Heroku know the different process types in your app
+!SLIDE 
+## A Procfile is a text file that lets Heroku know the different process types in your app
 !SLIDE code transition=toss
 ## Example (of a project using xsbt-start-script-plugin)
 
@@ -76,7 +76,7 @@ http://scala-days-2012.herokuapp.com
     batchJob1: target/start com.myco.myapp.BatchRunner Job1
     batchJob2: target/start com.myco.myapp.BatchRunner Job2
 
-!SLIDE code smaller transition=toss
+!SLIDE code smaller 
 ## One more Example 
 
     web: java -cp lib/* -Dweb.port=${PORT} some.main.Clazz
@@ -85,7 +85,7 @@ http://scala-days-2012.herokuapp.com
 ## Whats that ${PORT} thing on the last example?
 
 
-!SLIDE smbullets transition=toss
+!SLIDE smbullets 
 # What's a Config Var?
 ##Config Vars are a set of managed environment variables for your app
 * ${PORT} is assigned dynamically by the heroku runtime
@@ -99,7 +99,7 @@ http://scala-days-2012.herokuapp.com
 ## How does it get built?
 
 
-!SLIDE smbullets transition=toss
+!SLIDE smbullets 
 # What's a Buildpack?
 ## A buildpack is an adapter between an app and Heroku’s runtime. 
 ## A buildpack is responsible for language/framework-specific details including:
@@ -108,7 +108,7 @@ http://scala-days-2012.herokuapp.com
 * Dependency resolution (e.g via sbt, maven, etc)
 * Building the app so that it can execute 'in place'
 
-!SLIDE center transition=toss
+!SLIDE center 
 # Buildpacks are open source
 Scala Buildpack
 https://github.com/heroku/heroku-buildpack-scala
@@ -118,7 +118,7 @@ heroku create --stack cedar
 --buildpack https://github.com/yourgithub/yourbuildpack.git#somerev
 
 
-!SLIDE center incremental transition=toss
+!SLIDE center incremental 
 # What's a Dyno? 
 
 * Dyno is the term for Heroku's abstraction of compute resource
@@ -132,7 +132,9 @@ Elasticity: The number of dynos allocated for your app can be increased or decre
 !SLIDE 
 # Dyno Features
 
-Intelligent routing: The routing mesh tracks the location of all web dynos and routes HTTP traffic to them accordingly.
+Intelligent routing: The routing mesh tracks the location of all web dynos and routes HTTP traffic to them accordingly. Logplex aggregates log (event) streams from all dynos, alowing you to view,tail, send to syslog, etc.
+
+
 !SLIDE 
 # Dyno Features
 
@@ -144,8 +146,72 @@ Distribution and redundancy: Dynos are distributed across a distributed executio
 # Dyno Features
 Isolation: Every dyno is completely isolated in its own subvirtualized container, with many benefits for security, resource guarantees, and overall robustness.
 
-!SLIDE center transition=toss
+!SLIDE
+##Cool, cool. So what about databases and stuff like that?
+
+!SLIDE center 
 # What's an Addon? 
+
+https://addons.heroku.com/
+ 
+!SLIDE incremental
+# Need a database?
+
+* heroku addons:add shared-database  
+* (free, good for dev you get this by default with scala)
+
+* heroku addons:add heroku-postgresql 
+* (dedicated dbs, costs money)
+
+* Done
+
+
+
+!SLIDE incremental
+# Need Redis?
+
+* heroku addons:add redistogo 
+* (free, good for dev)
+
+* heroku addons:add redistogo:large 
+* (costs money)
+
+* Done
+
+!SLIDE incremental
+# Need Memcache? Monitoring? SMS? Queueing? Elastic Search? MongoDB?
+
+* You get the idea.
+
+!SLIDE
+##Addons add a Config Var to your app, usually a URI
+##You read the var in your code and use it to connect to the resource
+
+Example
+
+REDISTOGO_URL=
+redis://redistogo:somepassword@some.redistogo.com:someport/
+
+!SLIDE
+##Ok, nice. How much does this cost?
+
+!SLIDE incremental
+#FREE
+
+* each app you create gets 750 dyno hours/mo free
+* thats 1 dyno running all month long
+* almost all addons have a free tier
+
+!SLIDE incremental
+#NOT FREE
+
+* after the first dyno, its 5 cents/dyno hour
+* paid addons are usually on a monthly basis
+
+
+
+
+
 
 
 
