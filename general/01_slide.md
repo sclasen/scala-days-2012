@@ -43,6 +43,7 @@ http://scala-days-2012.herokuapp.com
     $ git init
     $ git add .
     $ git commit -m 'initial commit'
+        v----- 'heroku' is the heroku command line client
     $ heroku create --stack cedar
     Creating blooming-sunrise-8081... done, stack is cedar
     http://blooming-sunrise-8081.herokuapp.com/
@@ -56,33 +57,36 @@ http://scala-days-2012.herokuapp.com
 
 !SLIDE 
 ##So now that I've pushed my code 
-##How does Heroku know what to run?
+##how does Heroku know what to run?
 
 
 !SLIDE center 
 # What's a Procfile?
 !SLIDE 
-## A Procfile is a text file that lets Heroku know the different process types in your app
+## A Procfile is a text file that lets Heroku 
+## know the different process types in your app
 !SLIDE code transition=toss
 ## Example (of a project using xsbt-start-script-plugin)
 
     web: target/start com.myco.myapp.Server
 
-!SLIDE code smaller transition=toss
+!SLIDE code smaller
 ## Another example
 
-    web: target/start com.myco.myapp.WebServer
-    queueReader: target/sart com.myco.myapp.QueueReader
-    batchJob1: target/start com.myco.myapp.BatchRunner Job1
-    batchJob2: target/start com.myco.myapp.BatchRunner Job2
+    web: target/start com.myapp.WebServer -Dweb.port=${PORT} 
+    queueReader: target/sart com.myapp.QueueReader
+    batchJob1: target/start com.myapp.BatchRunner Job1
+    batchJob2: target/start com.myapp.BatchRunner Job2
 
 !SLIDE code smaller 
 ## One more Example 
 
-    web: java -cp lib/* -Dweb.port=${PORT} some.main.Clazz
+    web: java -cp lib/* ${JAVA_OPTS} some.main.Clazz
 
 !SLIDE 
-## Whats that ${PORT} thing on the last example?
+## Whats that 
+## ${PORT} and ${JAVA_OPTS} 
+## business in the Procfile examples?
 
 
 !SLIDE smbullets 
@@ -110,20 +114,26 @@ http://scala-days-2012.herokuapp.com
 
 !SLIDE center 
 # Buildpacks are open source
+
 Scala Buildpack
-https://github.com/heroku/heroku-buildpack-scala
+
+[https://github.com/heroku/heroku-buildpack-scala](https://github.com/heroku/heroku-buildpack-scala)
+
 ## Fork and tweak ours or create your own
 
 heroku create --stack cedar  
 --buildpack https://github.com/yourgithub/yourbuildpack.git#somerev
 
+!SLIDE
+
+## Ok, so where does my app run?
 
 !SLIDE center incremental 
 # What's a Dyno? 
 
 * Dyno is the term for Heroku's abstraction of compute resource
 * Essentially a Distributed UNIX process
-* Technically a chrooted locked down lxc container
+* Technically speaking its an lxc container (OS level virtuilization)
 
 !SLIDE 
 # Dyno Features
@@ -152,13 +162,13 @@ Isolation: Every dyno is completely isolated in its own subvirtualized container
 !SLIDE center 
 # What's an Addon? 
 
-https://addons.heroku.com/
+[https://addons.heroku.com/](https://addons.heroku.com/)
  
 !SLIDE incremental
 # Need a database?
 
 * heroku addons:add shared-database  
-* (free, good for dev you get this by default with scala)
+* (free, good for dev, you get this by default with scala)
 
 * heroku addons:add heroku-postgresql 
 * (dedicated dbs, costs money)
@@ -181,9 +191,11 @@ https://addons.heroku.com/
 !SLIDE incremental
 # Need Memcache? Monitoring? SMS? Queueing? Elastic Search? MongoDB?
 
+* heroku addons:add someaddon:someplan
 * You get the idea.
 
 !SLIDE
+#Addons and Config Vars
 ##Addons add a Config Var to your app, usually a URI
 ##You read the var in your code and use it to connect to the resource
 
@@ -199,7 +211,7 @@ redis://redistogo:somepassword@some.redistogo.com:someport/
 #FREE
 
 * each app you create gets 750 dyno hours/mo free
-* thats 1 dyno running all month long
+* thats 1 dyno per app running all month long
 * almost all addons have a free tier
 
 !SLIDE incremental
