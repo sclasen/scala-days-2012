@@ -1,178 +1,154 @@
-!SLIDE center
-# Twelve Factor Ruby
-<img src="ruby_logo.gif" style="background: white"/>
+!SLIDE center transition=toss
+# An Inside look at Heroku through the lens of Scala
 <br/>
 ![Heroku](logo.png)
 
-!SLIDE center
-<img src="12factor.png" style="background: white"/>
-## www.12factor.net
-## Adam Wiggins
+Follow along at 
+http://scala-days-2012.herokuapp.com
 
-!SLIDE 
+!SLIDE transition=toss
 # Me
 
-* Chris Continanza
-* Rails 1, 2, 3, Sinatra, CGI.out
-* adapters, workers, tests - oh my!
-* github.com/csquared
-* @em_csquared 
+* Scott Clasen
+* Heroku Scala Language Owner
+* github.com/ticktock | github.com/sclasen
+* @scottclasen
 
-
+!SLIDE bullets incremental transition=toss
+* What is Heroku? 
+* How do I deploy to Heroku?
+* What's a Procfile?
+* What's a Buildpack?
+* What's a Config Var?
+* What's a Dyno?
+* Whats's an Addon?
 !SLIDE center 
-# This is not a talk
-
-<img src="Magritte-pipe.jpg" />
-
+# What is Heroku? 
 !SLIDE center
-# I. Codebase
-### One codebase tracked in revision control, 
-### many deploys
-
-<img src="codebase-deploys.png" style="background: white"/>
-
-!SLIDE commandline
-# II. Dependencies
-## Explicitly declare and isolate dependencies
-
-    $ bundle install
-
-    $ bundle exec
-
-!SLIDE
-# III. Config
-## Store config in the environment
-
-    @@@ Ruby
-    Sequel.connect ENV['DATABASE_URL']
-
-    ActiveRecord.establish_connection 
-    ActiveRecord.establish_connection(url) 
-
-`https://github.com/glenngillen/activerecord_url_connections `
-
+## Heroku is a polyglot cloud application platform with first class support for Scala, Clojure, Java, Ruby, Python and Node.js
 !SLIDE center
-# IV. Backing Services
-## Treat backing services as attached resources
+## We strive to remove all the operational friction from the development process. 
 
-### 'URLs are the Uniform Way to Locate Resources' - Adam Wiggins
-<img src="attached-resources.png" style="background:white" width="600px"/>
+## We let you just concentrate on coding your app. 
 
-!SLIDE center
-# V. Build, release, run
-## Strictly separate build and run stages
+## Code. Deploy. Rinse. Repeat. 
 
-<img src="release.png" style="background:white" />
+## We manage load balancing, process monitoring, log aggregation and more.
 
-!SLIDE commandline
-# VI. Processes
-## Execute the app as one or more stateless processes
+!SLIDE center transition=toss
+# How do I deploy to Heroku?
+!SLIDE commandline incremental transition=toss
+## Deployment to Heroku is done with git.
+    
+    $ git init
+    $ git add .
+    $ git commit -m 'initial commit'
+    $ heroku create --stack cedar
+    Creating blooming-sunrise-8081... done, stack is cedar
+    http://blooming-sunrise-8081.herokuapp.com/
+    | git@heroku.com:blooming-sunrise-8081.git
+    Git remote heroku added
+    $ git push heroku master
+    ...output from app deployment...code some more...
+    $ git commit -a -m 'more changes'
+    $ git push heroku master
 
-    $ bundle exec thin start
-
-    $ bundle exec rake work
-
-!SLIDE
-# VII. Port binding
-## Export services via port binding
-
-    $ bundle exec thin start -p $PORT
-
-!SLIDE center
-# VIII. Concurrency
-## Scale out via the process model
-
-<img src="process-types.png" style="background:white" />
-
-!SLIDE
-# IX. Disposability  
-## Maximize robustness with fast startup and graceful shutdown
-
-    @@@ Ruby
-    trap('SIGTERM') do
-      gracefully_shutdown
-    end
 
 !SLIDE 
-# X. Dev/prod parity
-## Keep development, staging, and production as similar as possible
-
-    $ heroku addons:add \
-        heroku-postgresql:crane \ 
-        --fork postgres://A42...
-
-    $ heroku db:pull
+##So now that I've pushed my code 
+##How does Heroku know what to run?
 
 
+!SLIDE center transition=toss
+# What's a Procfile?
+!SLIDE center transition=toss
+# A Procfile is a text file that lets Heroku know the different process types in your app
+!SLIDE code transition=toss
+## Example (of a project using xsbt-start-script-plugin)
 
-!SLIDE
-# XI. Logs
-## Treat logs as event streams
+    web: target/start com.myco.myapp.Server
 
-    @@@ Ruby
-    config.logger = Logger.new(STDOUT)
-  
-!SLIDE
-# Logging Add-ons
+!SLIDE code smaller transition=toss
+## Another example
 
-  - New relic
-  - Hoptoad/Airbrake
-  - Papertrail
-  - More...
+    web: target/start com.myco.myapp.WebServer
+    queueReader: target/sart com.myco.myapp.QueueReader
+    batchJob1: target/start com.myco.myapp.BatchRunner Job1
+    batchJob2: target/start com.myco.myapp.BatchRunner Job2
 
-!SLIDE
-# XII. Admin Processes
-## Run admin/management tasks as one-off processes
+!SLIDE code smaller transition=toss
+## One more Example 
 
-    $ bundle exec rake db:migrate
+    web: java -cp lib/* -Dweb.port=${PORT} some.main.Clazz
 
-!SLIDE
-# (13) Tests 
-## Write tests to verify your logic
+!SLIDE 
+## Whats that ${PORT} thing on the last example?
 
-!SLIDE bullets incremental
-# Rails Fails: 
-  - III. Config 
-  - XI.  Logs
 
-!SLIDE
-# III. Config
-  
-    - config/database.yml
-    - config/environments
+!SLIDE smbullets transition=toss
+# What's a Config Var?
+##Config Vars are a set of managed environment variables for your app
+* ${PORT} is assigned dynamically by the heroku runtime
+* All others via 'heroku config:add FOO=bar'
+* Every time Config Var state is mutated, a completely new release of your app is created
+* Set a bad config var? No worries, 'heroku rollback'
 
-!SLIDE commandline
-# XI. Logs
 
-    $ tail -f log/production.log
-    
-    $ tail -f log/development.log
+!SLIDE 
+## Ok, so what hapens when I push my code?
+## How does it get built?
 
-!SLIDE
-# Both Fails are EASILY overcome
 
-    @@@ Ruby
-    config.logger = Logger.new(STDOUT)
+!SLIDE smbullets transition=toss
+# What's a Buildpack?
+## A buildpack is an adapter between an app and Heroku’s runtime. 
+## A buildpack is responsible for language/framework-specific details including:
 
-    ActiveRecord.establish_connection(
-                        ENV['DATABASE_URL'])
+* Creating the proper runtime environment around the app (e.g. ensuring sbt is downloaded and installed)
+* Dependency resolution (e.g via sbt, maven, etc)
+* Building the app so that it can execute 'in place'
 
-!SLIDE bullets
-# Gains
+!SLIDE center transition=toss
+# Buildpacks are open source
+Scala Buildpack
+https://github.com/heroku/heroku-buildpack-scala
+## Fork and tweak ours or create your own
 
-- maximum portability / new devs
-- deploy on cloud platforms
-- continuous deployment  staging
-- effortless scale
+heroku create --stack cedar  
+--buildpack https://github.com/yourgithub/yourbuildpack.git#somerev
 
-!SLIDE
-# Ruby Frameworks are 
-# For The Win!
 
-!SLIDE
-# Thank You !
+!SLIDE center incremental transition=toss
+# What's a Dyno? 
 
-## csquared@heroku.com
-## @em_csquared
-## github.com/csquared
-![Heroku](logo.png)
+* Dyno is the term for Heroku's abstraction of compute resource
+* Essentially a Distributed UNIX process
+* Technically a chrooted locked down lxc container
+
+!SLIDE 
+# Dyno Features
+
+Elasticity: The number of dynos allocated for your app can be increased or decreased at any time - without any server provisioning.
+!SLIDE 
+# Dyno Features
+
+Intelligent routing: The routing mesh tracks the location of all web dynos and routes HTTP traffic to them accordingly.
+!SLIDE 
+# Dyno Features
+
+Process management: Each dyno process is monitored for responsiveness. Misbehaving dynos are taken down and new dynos are launched in their place.
+!SLIDE 
+# Dyno Features
+Distribution and redundancy: Dynos are distributed across a distributed execution environment known as the dyno manifold. An app configured with two web dynos is running two processes, as you’d expect, but each process is running in a separate physical location. If a machine goes down, your site stays up - even with only two dynos.
+!SLIDE 
+# Dyno Features
+Isolation: Every dyno is completely isolated in its own subvirtualized container, with many benefits for security, resource guarantees, and overall robustness.
+
+!SLIDE center transition=toss
+# What's an Addon? 
+
+
+
+
+
+
