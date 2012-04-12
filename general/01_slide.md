@@ -18,10 +18,10 @@ http://scala-days-2012.herokuapp.com
 * What is Heroku? 
 * How do I deploy to Heroku?
 * What's a Procfile?
-* What's a Buildpack?
 * What's a Config Var?
+* What's a Buildpack?
 * What's a Dyno?
-* Whats's an Addon?
+* What's an Addon?
 !SLIDE center 
 # What is Heroku? 
 !SLIDE 
@@ -125,6 +125,12 @@ heroku create --stack cedar
 --buildpack https://github.com/yourgithub/yourbuildpack.git#somerev
 
 !SLIDE
+# AAh I pushed a bad build!
+No Worries.
+
+heroku rollback
+
+!SLIDE
 
 ## Ok, so where does my app run?
 
@@ -139,10 +145,27 @@ heroku create --stack cedar
 # Dyno Features
 
 Elasticity: The number of dynos allocated for your app can be increased or decreased at any time - without any server provisioning.
+
+heroku scale web=10 processor=4
+
+heroku scale web=1
+
 !SLIDE 
 # Dyno Features
 
 Intelligent routing: The routing mesh tracks the location of all web dynos and routes HTTP traffic to them accordingly. Logplex aggregates log (event) streams from all dynos, alowing you to view,tail, send to syslog, etc.
+
+heroku logs -t  
+
+(all logs)
+
+heroku logs -t -p web 
+
+(web logs)
+
+heroku logs -t -p web.2 
+
+(logs for web.2)
 
 
 !SLIDE 
@@ -157,7 +180,8 @@ Distribution and redundancy: Dynos are distributed across a distributed executio
 Isolation: Every dyno is completely isolated in its own subvirtualized container, with many benefits for security, resource guarantees, and overall robustness.
 
 !SLIDE
-##Cool, cool. So what about databases and stuff like that?
+## Cool, cool. 
+## So what about databases and stuff like that?
 
 !SLIDE center 
 # What's an Addon? 

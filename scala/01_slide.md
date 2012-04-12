@@ -49,7 +49,7 @@ java/scala client lib for the Heroku API.
 
 Pluggable HTTP Clients. 
 
-(apache-httpclient, ning-async, finagle, play-ws)
+(apache-httpclient, ning-async, finagle, play-ws are provided)
 
 (will add spray once ssl client support is in)
 
@@ -62,6 +62,12 @@ Pluggable Futures!
 [FinagleConnection -> Twitter Future](https://github.com/heroku/heroku.jar/blob/master/heroku-http-finagle/src/main/scala/com/heroku/api/connection/FinagleConnection.scala)
 
 [PlayWSConnection -> Play Promise](https://github.com/heroku/heroku.jar/blob/master/heroku-http-play/src/main/scala/com/heroku/api/connection/PlayWSConnection.scala)
+
+!SLIDE
+# Questions?
+
+!SLIDE
+#Thank You!
 
 
 
